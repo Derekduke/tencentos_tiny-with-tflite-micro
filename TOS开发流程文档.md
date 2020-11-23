@@ -182,13 +182,17 @@ tensorflow/lite/micro/tools/make/gen/linux_x86_64/prj/person_detection_test_int8
 
 将该文件下的tensorflow文件夹和third_party文件夹移动到STM32L496的工程目录下, 此处放在了`board\NUCLEO_L496ZG\MDK-ARM`文件夹下，然后将其加入工程目录：
 
-<img src="./pic/tf_project.png" style="zoom:40%;" />
+<div align=center>
+<img src="./pic/tf_project.png" width=50% />
+</div>
 
 如图示红框位置所示，其中以tensorflow开头的文件夹是与tensorflow框架有关的源文件；同时每个文件夹下的源文件基本就是tensorflow Lite Micro中每个文件夹下包含的源文件。值得注意的是，由于本历程中TensorFlow Lite Micro应用了CMSIS-NN对算子进行了加速，所以`tensorflow/lite/micro/tools`中主要存放与CMSIS-NN有关的源文件。
 
 增加include路径：
 
-<img src="./pic/tf_project_include.png" style="zoom:40%;" />
+<div align=center>
+<img src="./pic/tf_project_include.png" width=50% />
+</div>
 
 图示红框位置即为需要增加的include路径。
 
@@ -247,7 +251,9 @@ tensorflow/lite/micro/tools/make/gen/linux_x86_64/prj/person_detection_test_int8
 
 在系统成功运行之后，可以看到如下检测结果：
 
-<img src="./pic/tf_project_test.pn.png" style="zoom:30%;" />
+<div align=center>
+<img src="./pic/tf_project_test.pn.png" width=60% />
+</div>
 
 ## 6. 行人检测demo制作
 
