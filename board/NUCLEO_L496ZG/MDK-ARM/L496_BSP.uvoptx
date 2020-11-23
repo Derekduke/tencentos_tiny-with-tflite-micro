@@ -230,7 +230,11 @@
 
   <Group>
     <GroupName>Application/User/Core</GroupName>
+<<<<<<< HEAD
     <tvExp>1</tvExp>
+=======
+    <tvExp>0</tvExp>
+>>>>>>> b3e3093018eb607c20394a96aa1715dade7f5a46
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1094,7 +1098,11 @@
 
   <Group>
     <GroupName>Drivers/HARDWARE/Camera</GroupName>
+<<<<<<< HEAD
     <tvExp>1</tvExp>
+=======
+    <tvExp>0</tvExp>
+>>>>>>> b3e3093018eb607c20394a96aa1715dade7f5a46
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1618,7 +1626,11 @@
       <GroupNumber>14</GroupNumber>
       <FileNumber>109</FileNumber>
       <FileType>8</FileType>
+<<<<<<< HEAD
       <tvExp>0</tvExp>
+=======
+      <tvExp>1</tvExp>
+>>>>>>> b3e3093018eb607c20394a96aa1715dade7f5a46
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\tensorflow\lite\micro\examples\person_detection_experimental\main_functions.cc</PathWithFileName>
