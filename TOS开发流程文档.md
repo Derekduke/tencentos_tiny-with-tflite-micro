@@ -1,4 +1,4 @@
-<center># 低功耗行人检测系统开发指南</center>
+<div align='center' ><font size='70'>低功耗行人检测系统开发指南</font></div>
 
 
 
