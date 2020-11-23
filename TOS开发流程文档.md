@@ -14,7 +14,7 @@ https://github.com/Tencent/TencentOS-tiny/blob/master/doc/10.Porting_Manual_for_
 对stm32L496的外设引脚分配如下：
 
 <div align=center>
-<img src="pic/all.jpg" width="zoom:50%;" />
+<img src="pic/all.jpg" width="zoom:10%;" />
 </div>
 
 ### 2.4寸LCD屏
