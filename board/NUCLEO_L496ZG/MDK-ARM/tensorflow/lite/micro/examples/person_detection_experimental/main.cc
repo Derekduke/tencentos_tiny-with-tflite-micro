@@ -63,16 +63,12 @@ extern DCMI_HandleTypeDef hdcmi;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-<<<<<<< HEAD
+
 uint8_t RGB565toGRAY(uint16_t bg_color)
-=======
-uint8_t rgb565togray(uint16_t bg_color)
->>>>>>> b3e3093018eb607c20394a96aa1715dade7f5a46
 {
     uint8_t bg_r = 0;
     uint8_t bg_g = 0;
     uint8_t bg_b = 0;
-<<<<<<< HEAD
     bg_r = ((bg_color>>11)&0xff)<<3;
     bg_g = ((bg_color>>5)&0x3f)<<2;
     bg_b = (bg_color&0x1f)<<2;
@@ -85,27 +81,6 @@ void Input_Convert(uint16_t* camera_buffer , uint8_t* model_buffer)
 	for(int i=0 ; i<OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT ; i++)
 	{
 		model_buffer[i] = RGB565toGRAY(camera_buffer[i]);
-=======
-
-    bg_r = ((bg_color>>11)&0xff)<<3;
-    bg_g = ((bg_color>>5)&0x3f)<<2;
-    bg_b = (bg_color&0x1f)<<2;
-
-    //printf("bg_r is %d\n" , bg_r);
-    //printf("bg_g is %d\n" , bg_g);
-    //printf("bg_b is %d\n" , bg_b);
-
-    uint8_t gray = (bg_r*299 + bg_g*587 + bg_b*114 + 500) / 1000;
-    //printf("gray is %d\n" , gray);
-    return gray;
-}
-
-void modelresize(uint16_t* camera_buffer , uint8_t* model_buffer)
-{
-	for(int i=0 ; i<OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT ; i++)
-	{
-		model_buffer[i] = rgb565togray(camera_buffer[i]);
->>>>>>> b3e3093018eb607c20394a96aa1715dade7f5a46
 	}
 	printf("resize over\n");
 }
@@ -130,12 +105,7 @@ void task1(void *pdata)
 		{
 			if(HAL_DCMI_Stop(&hdcmi))
 				Error_Handler();
-			
-<<<<<<< HEAD
 			Input_Convert(camBuffer , modelBuffer);
-=======
-			modelresize(camBuffer , modelBuffer);
->>>>>>> b3e3093018eb607c20394a96aa1715dade7f5a46
 			res = loop();
 			LCD_2IN4_Display(camBuffer,OV2640_PIXEL_WIDTH,OV2640_PIXEL_HEIGHT);
 			if(HAL_DCMI_Start_DMA(&hdcmi, DCMI_MODE_CONTINUOUS,  (uint32_t)camBuffer , (OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT)/2))
