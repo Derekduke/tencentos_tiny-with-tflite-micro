@@ -156,17 +156,102 @@ void Input_Convert(uint16_t* camera_buffer , uint8_t* model_buffer)
 }
 ```
 
-
-
 ## 5. Tensorflow Lite Micro移植
 
+### 1.获取源代码
 
+由于tensoroflow官方的源码的迭代速度较快, 所以不建议直接clone最新的官方源码, 而是直接应用某一固定版本的源码，在此基础之上，我们需要解决如何将Tensorflow lite Micro的有关代码从主体仓库中剥离出来。
 
+在Tensorflow主仓库的根目录下输入（这一步需要在Linux系统下进行）：
 
+```
+make -f tensorflow/lite/micro/tools/make/Makefile generate_projects
+```
+
+命令的输出结果是若干基于Tensorflow Lite Micro的独立工程项目文件夹。
+
+此处我们需要应用的案例是Tensorflow Lite Micro的person detection test工程, 所以从以下目录中获得
+
+```
+tensorflow/lite/micro/tools/make/gen/linux_x86_64/prj/person_detection_test_int8/keil
+```
+
+其中提供了一个完整的Tensorflow Lite Micro的Keil工程, 但是没提供任何板卡方面的支持.
+
+### 2.将TFLite Micro加入Keil工程
+
+将该文件下的tensorflow文件夹和third_party文件夹移动到STM32L496的工程目录下, 此处放在了`board\NUCLEO_L496ZG\MDK-ARM`文件夹下，然后将其加入工程目录：
+
+<img src="C:/Users/HyLiu/Desktop/pic/tf_project.png" style="zoom:80%;" />
+
+如图示红框位置所示，其中以tensorflow开头的文件夹是与tensorflow框架有关的源文件；同时每个文件夹下的源文件基本就是tensorflow Lite Micro中每个文件夹下包含的源文件。值得注意的是，由于本历程中TensorFlow Lite Micro应用了CMSIS-NN对算子进行了加速，所以`tensorflow/lite/micro/tools`中主要存放与CMSIS-NN有关的源文件。
+
+增加include路径：
+
+<img src="C:/Users/HyLiu/Desktop/pic/tf_project_include.png" style="zoom:80%;" />
+
+图示红框位置即为需要增加的include路径。
+
+具体每个文件夹中的源文件可以具体参考工程目录，值得注意的是，`tensorflow/lite/micro/kernel`目录中的`add.cc`, `conv.cc`, `depthwise.cc`, `full_connected.cc`, `mul.cc`, `pooling.cc`, `softmax.cc`源文件是采用的基于CMSIS-NN优化后的算子，而并没有应用Tensorflow Lite Micro自带的reference算子，在添加有关源文件是需要注意。
+
+### 3. 将TFLiteMicro移植到Tencent OS-tiny系统中
+
+在TensorFlow Lite Micro的移植过程中，首先需要实现`debug_log.cc`中的`void DebugLog(const char *s)`函数，用于打印当前TensorFlow Lite Micro运行信息。
+
+由于Tencent OS  Tiny的Nucleo STM32L496 BSP中的MDK开发环境提供的`printf`函数主要是基于Keil的microlib库，但是microlib库不支持C++的全局变量，编译时会报错，所以需要解决在不依赖microlib的情况下实现系统的`printf`打印功能。
+
+在实现过程中我们发现，`printf`可以通过对`stdio.h`中的`printf`函数进行重定向来实现；但是由于取消了Microlib库，Keil在编译的过程中会使用semihosting SWI完成sys_io，使得系统在非调试状态下无法运行，需要手动关闭半主机模式，并实现一个retarget.c来禁止semihosting。
+
+同时由于TensorFlow Lite Micro的实现过程中包含了complex template, 其重写了"<<"和">>"运算符，需要实现所有的sys_io，即完整版的retarget.c文件来保证整个工程的顺利编译链接。根据Keil提供的官方模板，我们最终完成了TensorFlow Lite Micro针对Tencent OS tiny的移植，retarget.c函数中的具体内容可以参考源码。
+
+### 4. 应用TFLite Micro自带测试框架完成行人检测模型测试
+
+在成功移植之后，接下来需要检测系统是否正常运行，这里我们直接选用完整的uint8 行人检测模型来进行系统测试，在经过上述的移植过程之后，整个TensorFlow Lite Micro系统就可以完整编译并成功烧录。由于TensorFlow Lite Micro中内置了一个轻量级测试框架，需要在其中加入有关的板级初始化内容，`micro_test.h`中在添加以下代码：
+
+```
+#define TF_LITE_MICRO_TESTS_BEGIN              \
+  namespace micro_test {                       \
+  int tests_passed;                            \
+  int tests_failed;                            \
+  bool is_test_complete;                       \
+  bool did_test_fail;                          \
+  tflite::ErrorReporter* reporter;             \
+  }                                            \
+                                               \
+  int main(void) {            				   \
+    micro_test::tests_passed = 0;              \
+    micro_test::tests_failed = 0;              \
+    tflite::MicroErrorReporter error_reporter; \
+    micro_test::reporter = &error_reporter;	   \
+	HAL_Init();								   \
+	SystemClock_Config();                      \
+	board_init();					           \
+	printf("Init Successful");
+```
+
+```
+#define TF_LITE_MICRO_TESTS_END                                \
+  micro_test::reporter->Report(                                \
+      "%d/%d tests passed", micro_test::tests_passed,          \
+      (micro_test::tests_failed + micro_test::tests_passed));  \
+  if (micro_test::tests_failed == 0) {                         \
+    micro_test::reporter->Report("~~~ALL TESTS PASSED~~~\n");  \
+  } else {                                                     \
+    micro_test::reporter->Report("~~~SOME TESTS FAILED~~~\n"); \
+  }                                                            \
+	while(1);												   \
+  }
+```
+
+整个系统可以顺利初始化并打印测试结果。
+
+在系统成功运行之后，可以看到如下检测结果：
+
+<img src="C:/Users/HyLiu/Desktop/pic/tf_project_test.pn.png" style="zoom:80%;" />
 
 ## 6. 行人检测demo制作
 
-demo的实现代码放在main.cc的Task1中，并分配了10240kb的运行栈空间：
+demo的实现代码放在main.cc的Task1中，并分配了10240b的运行栈空间：
 
 ```c
 void task1(void *pdata)
@@ -195,8 +280,6 @@ void task1(void *pdata)
     }
 }
 ```
-
-
 
 ## 7.结果分析
 
