@@ -63,7 +63,7 @@ https://github.com/Tencent/TencentOS-tiny/blob/master/doc/10.Porting_Manual_for_
 
 ## 3. OV2640摄像头驱动开发
 
-<img src="pic/camera.jpg" style="zoom:150%;" />
+<img src="pic/camera.jpg" style="zoom:200%;" />
 
 ### 纳秒级系统延时
 
