@@ -63,7 +63,7 @@ https://github.com/Tencent/TencentOS-tiny/blob/master/doc/10.Porting_Manual_for_
 
 ## 3. OV2640摄像头驱动开发
 
-![](pic\camera.jpg)
+<img src="pic/camera.jpg" style="zoom:150%;" />
 
 ### 纳秒级系统延时
 
@@ -127,7 +127,7 @@ void OV2640_Special_Effects(uint8_t eft);					//eft设置为0，表示默认普�
 
 ## 4. 图像预处理
 
-![](pic\RGB565.jpg)
+<img src="pic\RGB565.jpg" style="zoom:150%;" />
 
 为完成摄像头输入彩图到模型输入需要的灰度图转换，需从输入的RGB565像素格式中解析出R、G、B三通道的值，再根据心理学公式计算出单个像素点的灰度：
 
