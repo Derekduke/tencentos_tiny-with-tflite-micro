@@ -1,5 +1,6 @@
+<p align="center">
 # <center>低功耗行人检测系统开发指南</center>
-
+</p>
 
 
 ## 0.选型依据
