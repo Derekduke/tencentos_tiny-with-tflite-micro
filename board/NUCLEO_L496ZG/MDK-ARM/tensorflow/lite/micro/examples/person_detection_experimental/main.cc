@@ -33,8 +33,8 @@ limitations under the License.
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define TASK1_STK_SIZE		10240
-#define TASK2_STK_SIZE		256
+#define TASK1_STK_SIZE		1024
+#define TASK2_STK_SIZE		128
 //#define TASK1_STK_SIZE		256
 //#define TASK2_STK_SIZE		256
 #define LED_Pin           GPIO_PIN_14 
@@ -54,7 +54,7 @@ limitations under the License.
 
 /* USER CODE BEGIN PV */
 uint16_t camBuffer[OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT];
-uint8_t modelBuffer[OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT];
+//uint8_t modelBuffer[OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT];
 uint8_t frame_flag = 0;
 uint8_t tensor_flag = 0;
 extern DCMI_HandleTypeDef hdcmi;
@@ -63,27 +63,6 @@ extern DCMI_HandleTypeDef hdcmi;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
-uint8_t RGB565toGRAY(uint16_t bg_color)
-{
-    uint8_t bg_r = 0;
-    uint8_t bg_g = 0;
-    uint8_t bg_b = 0;
-    bg_r = ((bg_color>>11)&0xff)<<3;
-    bg_g = ((bg_color>>5)&0x3f)<<2;
-    bg_b = (bg_color&0x1f)<<2;
-    uint8_t gray = (bg_r*299 + bg_g*587 + bg_b*114 + 500) / 1000;
-    return gray;
-}
-
-void Input_Convert(uint16_t* camera_buffer , uint8_t* model_buffer)
-{
-	for(int i=0 ; i<OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT ; i++)
-	{
-		model_buffer[i] = RGB565toGRAY(camera_buffer[i]);
-	}
-	printf("resize over\n");
-}
 
 void task2(void *pdata);
 osThreadDef(task2, osPriorityNormal, 1, TASK2_STK_SIZE);
@@ -105,7 +84,7 @@ void task1(void *pdata)
 		{
 			if(HAL_DCMI_Stop(&hdcmi))
 				Error_Handler();
-			Input_Convert(camBuffer , modelBuffer);
+			//Input_Convert(camBuffer , modelBuffer);
 			res = loop();
 			LCD_2IN4_Display(camBuffer,OV2640_PIXEL_WIDTH,OV2640_PIXEL_HEIGHT);
 			if(HAL_DCMI_Start_DMA(&hdcmi, DCMI_MODE_CONTINUOUS,  (uint32_t)camBuffer , (OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT)/2))

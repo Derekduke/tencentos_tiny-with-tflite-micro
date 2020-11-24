@@ -114,6 +114,6 @@ int loop() {
   int8_t person_score = output->data.uint8[kPersonIndex];
   int8_t no_person_score = output->data.uint8[kNotAPersonIndex];
   RespondToDetection(error_reporter, person_score, no_person_score);
-	if(person_score >= no_person_score) return 1;
+	if(person_score >= no_person_score + 50) return 1;
   else return 0;
 }
