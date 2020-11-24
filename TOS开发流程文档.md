@@ -385,7 +385,17 @@ void task1(void *pdata)
     }
 }
 ```
-
+需要将image_provider.cc中GetImage函数的数据获取源修改为相机输入的buffer
+```c
+TfLiteStatus GetImage(tflite::ErrorReporter* error_reporter, int image_width,
+                      int image_height, int channels, int8_t* image_data) {
+    for(int i=0 ; i<OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT ; i++)
+    {
+        image_data[i] = RGB565toGRAY(camBuffer[i]);
+    }
+    return kTfLiteOk;
+}
+```
 ## 7.结果分析
 
 
