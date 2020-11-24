@@ -62,11 +62,15 @@
 
 ## 2. 2.4寸LCD驱动移植
 
+### 2.1硬件准备
+
 <div align=center>
 <img src="./pic/360px-2.4inch_LCD_Module_001.jpg" width=50% />
 </div>
 
 微雪电子2.4英寸TFT显示屏模块，分辨率为 240*320，使用 SPI 接口通信，LCD 内部控制芯片为IL9341。
+
+### 2.2初始化SPI
 
 使用Stm32CubeMX初始化SPI1：
 
@@ -80,6 +84,14 @@
 
 <div align=center>
 <img src="./pic/LCD Driver File.png" width=80% />
+</div>
+
+
+
+增加include路径
+
+<div align=center>
+<img src="./pic/LCD Driver Inc.png" width=100% />
 </div>
 
 
@@ -237,7 +249,7 @@ void Input_Convert(uint16_t* camera_buffer , uint8_t* model_buffer)
 {
 	for(int i=0 ; i<OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT ; i++) 	//遍历所有像素点
 	{
-		model_buffer[i] = RGB565toGRAY(camera_buffer[i]);			//单个像素点的RGB转换为灰度值
+		model_buffer[i] = RGB565toGRAY(camera_buffer[i]);		//单个像素点的RGB转换为灰度值
 	}
 	printf("one picture convert over\n");
 }
