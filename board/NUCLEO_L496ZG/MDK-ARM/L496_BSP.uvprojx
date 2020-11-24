@@ -784,59 +784,9 @@
               <FilePath>..\Core\HARDWARE\LCD\Src\DEV_Config.c</FilePath>
             </File>
             <File>
-              <FileName>font8.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\font8.c</FilePath>
-            </File>
-            <File>
-              <FileName>font12.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\font12.c</FilePath>
-            </File>
-            <File>
-              <FileName>font12CN.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\font12CN.c</FilePath>
-            </File>
-            <File>
-              <FileName>font16.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\font16.c</FilePath>
-            </File>
-            <File>
-              <FileName>font20.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\font20.c</FilePath>
-            </File>
-            <File>
-              <FileName>font24.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\font24.c</FilePath>
-            </File>
-            <File>
-              <FileName>font24CN.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\font24CN.c</FilePath>
-            </File>
-            <File>
-              <FileName>GUI_Paint.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\GUI_Paint.c</FilePath>
-            </File>
-            <File>
-              <FileName>image.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\image.c</FilePath>
-            </File>
-            <File>
               <FileName>LCD_2inch4.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\HARDWARE\LCD\Src\LCD_2inch4.c</FilePath>
-            </File>
-            <File>
-              <FileName>LCD_2inch4_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\HARDWARE\LCD\Src\LCD_2inch4_test.c</FilePath>
             </File>
           </Files>
         </Group>
