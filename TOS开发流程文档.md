@@ -2,7 +2,13 @@
 
 
 ## 0.选型依据
+- 官方仓库操作系统+基础BSP（hello_world例程）占用为 44kb
+- Tensorflow Lite Micro预计运行栈空间（1kb）+输入图像(9K) 10kb左右
+- 图像输入缓存 18kb（96*96*2/1024）
+- 预留TF Lite Micro框架的静态变量空间
 
+由于TF Lite Micro实际运行状况未知，选择一块320kb SRAM的低功耗L系列MCU、系统时钟在30MHz（摄像头输入速度）以上较为稳妥，且必须要支持DCMI接口。
+因此选择NUCLEO-L496ZG板卡作为尝试。
 
 
 ## 1. 基于NUCLEO-L496ZG移植
@@ -385,7 +391,7 @@ void task1(void *pdata)
     }
 }
 ```
-需要将image_provider.cc中GetImage函数的数据获取源修改为相机输入的buffer
+需要将image_provider.cc中GetImage函数的数据获取源修改为相机输入的buffer：
 ```c
 TfLiteStatus GetImage(tflite::ErrorReporter* error_reporter, int image_width,
                       int image_height, int channels, int8_t* image_data) {
@@ -397,6 +403,7 @@ TfLiteStatus GetImage(tflite::ErrorReporter* error_reporter, int image_width,
 }
 ```
 ## 7.结果分析
-
+实际SRAM占用为168K，Flash占用为314K
+其中除开TF Lite Micro的其它内存占用为25K（os+camera+lcd）
 
 
