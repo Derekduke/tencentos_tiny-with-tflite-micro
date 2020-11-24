@@ -7,14 +7,16 @@
 
 ## 1. 基于NUCLEO-L496ZG移植
 
-基于keil的移植教程可以完全参考官网的步骤进行：
-https://github.com/Tencent/TencentOS-tiny/blob/master/doc/10.Porting_Manual_for_KEIL.md
+- tos基于keil的移植教程可以完全参考官网的步骤进行：
+  https://github.com/Tencent/TencentOS-tiny/blob/master/doc/10.Porting_Manual_for_KEIL.md
 
-对stm32L496的外设引脚分配如下：
+- 使用ST官方的STM32CubeMX软件来自动化生成MCU外设配置的代码。
 
 <div align=center>
 <img src="pic/all.jpg" width=60% />
 </div>
+
+对stm32L496的外设引脚分配如下：
 
 ### 2.4寸LCD屏
 
@@ -58,9 +60,73 @@ https://github.com/Tencent/TencentOS-tiny/blob/master/doc/10.Porting_Manual_for_
 
 
 
-## 2. 2.4寸LCD驱动开发
+## 2. 2.4寸LCD驱动移植
+
+### 2.1硬件准备
+
+<div align=center>
+<img src="./pic/360px-2.4inch_LCD_Module_001.jpg" width=50% />
+</div>
+
+微雪电子2.4英寸TFT显示屏模块，分辨率为 240*320，使用 SPI 接口通信，LCD 内部控制芯片为IL9341。
+
+### 2.2初始化SPI
+
+使用Stm32CubeMX初始化SPI1：
+
+<div align=center>
+<img src="./pic/spi init.png" width=100% />
+</div>
+
+### 2.3 复制驱动代码
+
+添加**LCD_2inch4.c**和**DEV_Config.c**，包含头文件**LCD_2inch4.h**和**DEV_Config.h**。
+
+<div align=center>
+<img src="./pic/LCD Driver File.png" width=80% />
+</div>
 
 
+
+增加include路径
+
+<div align=center>
+<img src="./pic/LCD Driver Inc.png" width=100% />
+</div>
+
+
+
+在**DEV_Config.h**定义相应的引脚：
+
+<div align=center>
+<img src="./pic/LCD PIN.png" width=90% />
+</div>
+
+### 2.4重写LCD_2IN4_Display函数
+
+在**LCD_2inch4.c**添加如下函数定义，并在**LCD_2inch4.h**添加函数声明：
+
+```c
+void LCD_2IN4_Display(UWORD *image,int width, int height)
+{
+  UWORD i,j;
+	
+	if(width > LCD_2IN4_WIDTH || height > LCD_2IN4_HEIGHT){
+		printf("Picture size out of range!\n");
+		return;
+	}
+	
+  LCD_2IN4_SetWindow(0, 0, width, height);
+	DEV_Digital_Write(DEV_DC_PIN, 1);
+	for(i = 0; i < width; i++){
+		for(j = 0; j < height; j++){
+			LCD_2IN4_WriteData_Word(*(image+i*height+j));
+		}
+	 }
+}
+```
+
+后续直接调用该函数，显示RGB565图像，方便摄像头调试。
 
 ## 3. OV2640摄像头驱动开发
 
@@ -124,6 +190,39 @@ void OV2640_Special_Effects(uint8_t eft);					//eft设置为0，表示默认普�
 
 ### DCMI接口配置
 
+**DCMI配置：**
+
+<div align=center>
+<img src="./pic/DCMI 1.png" width=100% />
+</div>
+
+<div align=center>
+<img src="./pic/DCMI 2.png" width=100% />
+</div>
+
+
+
+**DMA配置：**
+
+<div align=center>
+<img src="./pic/DMA.png" width=100% />
+</div>
+
+
+
+**在main函数重写DCMI帧中断回调函数：**
+
+```c
+/* USER CODE BEGIN 4 */
+void HAL_DCMI_FrameEventCallback(DCMI_HandleTypeDef *hdcmi)
+{
+	if(hdcmi->State == 2 && frame_flag != 1){
+		frame_flag = 1; 
+	}
+}
+/* USER CODE END 4 */
+```
+
 
 
 ## 4. 图像预处理
@@ -150,7 +249,7 @@ void Input_Convert(uint16_t* camera_buffer , uint8_t* model_buffer)
 {
 	for(int i=0 ; i<OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT ; i++) 	//遍历所有像素点
 	{
-		model_buffer[i] = RGB565toGRAY(camera_buffer[i]);			//单个像素点的RGB转换为灰度值
+		model_buffer[i] = RGB565toGRAY(camera_buffer[i]);		//单个像素点的RGB转换为灰度值
 	}
 	printf("one picture convert over\n");
 }

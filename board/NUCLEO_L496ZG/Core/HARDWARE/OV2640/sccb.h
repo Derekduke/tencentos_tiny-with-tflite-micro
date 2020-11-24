@@ -15,7 +15,6 @@
 //All rights reserved									  
 ////////////////////////////////////////////////////////////////////////////////// 
 
-<<<<<<< HEAD
 //IO操作函数	 
 //#define SCCB_SCL    		PBout(14)	 	//SCL
 //#define SCCB_SDA    		PBout(7) 		//SDA	 
@@ -25,21 +24,6 @@
 #define SCCB_SDA_IN()  {GPIOB->MODER&=~(3<<(5*2));GPIOB->MODER|=0<<5*2;}	//PD7 输入
 #define SCCB_SDA_OUT() {GPIOB->MODER&=~(3<<(5*2));GPIOB->MODER|=1<<5*2;} 	//PD7 输出
 #define SCCB_ID   			0X60  			//OV2640的ID
-=======
-
-//IO方向设置
-#define SCCB_SDA_IN()  {GPIOB->MODER&=~(3<<(5*2));GPIOB->MODER|=0<<5*2;}	//PD7 输入
-#define SCCB_SDA_OUT() {GPIOB->MODER&=~(3<<(5*2));GPIOB->MODER|=1<<5*2;} 	//PD7 输出
-
-
-//IO操作函数	 
-//#define SCCB_SCL    		PBout(14)	 	//SCL
-//#define SCCB_SDA    		PBout(7) 		//SDA	 
-
-//#define SCCB_READ_SDA   PDin(7)  		//输入SDA    
-#define SCCB_ID   			0X60  			//OV2640的ID
-
->>>>>>> b3e3093018eb607c20394a96aa1715dade7f5a46
 ///////////////////////////////////////////
 void SCCB_Init(void);
 void SCCB_Start(void);
