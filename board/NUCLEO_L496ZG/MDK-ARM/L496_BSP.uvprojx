@@ -458,6 +458,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Src\regarget.c</FilePath>
             </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\main.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -932,11 +937,6 @@
               <FileName>image_provider.cc</FileName>
               <FileType>8</FileType>
               <FilePath>.\tensorflow\lite\micro\examples\person_detection_experimental\image_provider.cc</FilePath>
-            </File>
-            <File>
-              <FileName>main.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\tensorflow\lite\micro\examples\person_detection_experimental\main.cc</FilePath>
             </File>
             <File>
               <FileName>main_functions.cc</FileName>
