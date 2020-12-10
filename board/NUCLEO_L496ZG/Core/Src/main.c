@@ -52,7 +52,7 @@ limitations under the License.
 
 /* USER CODE BEGIN PV */
 uint16_t camBuffer[OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT];
-//uint8_t modelBuffer[OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT];
+uint8_t modBuffer[OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT];
 uint8_t frame_flag = 0;
 uint8_t tensor_flag = 0;
 extern DCMI_HandleTypeDef hdcmi;
@@ -70,6 +70,26 @@ osThreadDef(task1, osPriorityNormal, 1, TASK1_STK_SIZE);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint8_t RGB565toGRAY(uint16_t bg_color)
+{
+    uint8_t bg_r = 0;
+    uint8_t bg_g = 0;
+    uint8_t bg_b = 0;
+    bg_r = ((bg_color>>11)&0xff)<<3;
+    bg_g = ((bg_color>>5)&0x3f)<<2;
+    bg_b = (bg_color&0x1f)<<2;
+    uint8_t gray = (bg_r*299 + bg_g*587 + bg_b*114 + 500) / 1000;
+    return gray;
+}
+
+void input_convert(uint16_t* camera_buffer , uint8_t* model_buffer)
+{
+	for(int i=0 ; i<OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT ; i++)
+	{
+		model_buffer[i] = RGB565toGRAY(camera_buffer[i]);
+	}
+}
+
 void task1(void *pdata)
 {
 	int res = 0;
@@ -79,7 +99,8 @@ void task1(void *pdata)
 		{
 			if(HAL_DCMI_Stop(&hdcmi))
 				Error_Handler();
-			res = loop();
+			input_convert(camBuffer , modBuffer);
+			res = person_detect();
 			LCD_2IN4_Display(camBuffer,OV2640_PIXEL_WIDTH,OV2640_PIXEL_HEIGHT);
 			if(HAL_DCMI_Start_DMA(&hdcmi, DCMI_MODE_CONTINUOUS,  (uint32_t)camBuffer , (OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT)/2))
 				Error_Handler();
@@ -97,16 +118,11 @@ void task1(void *pdata)
 
 void task2(void *pdata)
 {
+		int count = 0;
     while(1)
     {
-        //printf("\r\nHello TencentOS !\r\n***This is task2 ,count is %d \r\n", count++);
-        //osDelay(1000);
-			if(frame_flag == 1)
-			{
-				loop();
-				tensor_flag = 1;
-			}
-			//HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+        printf("\r\nHello TencentOS !\r\n***This is task2 ,count is %d \r\n", count++);
+        osDelay(1000);
 			osDelay(50);
 			
 		//tos_task_delay(1000);
@@ -156,11 +172,11 @@ int main(void)
 	{
 	Error_Handler();
 	}
-	setup(); //tensorflow用例初始化
+	person_detect_init(); //tensorflow用例初始化
 	
 	osKernelInitialize(); //TOS Tiny kernel initialize
 	osThreadCreate(osThread(task1), NULL);// Create task1
-	//osThreadCreate(osThread(task2), NULL);// Create task2
+	osThreadCreate(osThread(task2), NULL);// Create task2
 	osKernelStart();//Start TOS Tiny
 	/* USER CODE END 2 */
 

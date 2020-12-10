@@ -6,7 +6,6 @@ extern "C" {
 #endif
 //延时nus
 //nus为要延时的us数.	
-//nus:0~190887435(最大值即2^32/fac_us@fac_us=22.5)	 
 
 //延时nms
 //nms:要延时的ms数

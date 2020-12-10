@@ -48,14 +48,10 @@ extern uint8_t modelBuffer[OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT];
 
 TfLiteStatus GetImage(tflite::ErrorReporter* error_reporter, int image_width,
                       int image_height, int channels, int8_t* image_data) {
-  //for (int i = 0; i < image_width * image_height * channels; ++i) {
-	//for (int i = 0; i < OV2640_PIXEL_WIDTH * OV2640_PIXEL_HEIGHT * 1; ++i) {
-    //image_data[i] = g_no_person_data[i]; // ÎÞÈËÊý¾Ý -- Óë²âÊÔÓÃÀý²»Í¬
-	//image_data[i] = g_person_data[i]; // ÓÐÈËÊý¾Ý -- Óë²âÊÔÓÃÀý½á¹ûÏàÍ¬
-	//image_data[i] = modelBuffer[i]; //ÊµÏÖÉãÏñÍ·Í¼Ïñ»ñÈ
 	for(int i=0 ; i<OV2640_PIXEL_WIDTH*OV2640_PIXEL_HEIGHT ; i++)
 	{
-		image_data[i] = RGB565toGRAY(camBuffer[i]);
+		//image_data[i] = RGB565toGRAY(camBuffer[i]);
+		image_data[i] = RGB565toGRAY(image_data[i]);
 	}
   //}
   return kTfLiteOk;
